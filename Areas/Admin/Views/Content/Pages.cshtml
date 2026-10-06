@@ -1,0 +1,2 @@
+@model IEnumerable<Page>
+@{ViewData["Title"]="Pages";}<div class="page-title"><div><h1>Pages</h1><p>Manage timeless content and site structure.</p></div></div><section class="panel"><div class="table">@foreach(var x in Model){<div class="tr"><div class="doc-icon">▤</div><div class="grow"><b>@x.Title</b><small>/@x.Slug · Updated @x.UpdatedAt.ToString("MMM dd")</small></div><span class="badge published">@x.Status</span></div>}</div></section>

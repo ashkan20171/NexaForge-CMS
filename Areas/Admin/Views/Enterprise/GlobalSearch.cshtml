@@ -1,0 +1,4 @@
+@using AshkanCMS.Models
+@{ViewData["Title"]="Global Search"; var posts=(IEnumerable<Post>)ViewBag.Posts; var pages=(IEnumerable<Page>)ViewBag.Pages;}
+<div class="hero-panel"><div><span class="eyebrow">DISCOVER</span><h1>Global search</h1><p>Search across your editorial content from one place.</p></div></div><section class="panel"><form method="get" class="search-big"><input name="q" value="@ViewBag.Q" placeholder="Search posts and pages..."><button class="btn primary">Search</button></form></section>
+<div class="split-grid"><section class="panel"><h2>Posts</h2>@foreach(var x in posts){<div class="row-card"><div><b>@x.Title</b><small>/post/@x.Slug</small></div><a class="btn ghost" href="/Admin/Posts/Edit/@x.Id">Edit</a></div>}</section><section class="panel"><h2>Pages</h2>@foreach(var x in pages){<div class="row-card"><div><b>@x.Title</b><small>/page/@x.Slug</small></div><span class="pill">Page</span></div>}</section></div>

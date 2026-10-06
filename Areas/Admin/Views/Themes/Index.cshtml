@@ -1,0 +1,3 @@
+@model IEnumerable<ThemeDefinition>
+@{ViewData["Title"]="Theme manager";}
+<div class="page-head"><div><h1>Visual themes</h1><p>Choose the presentation personality for your publishing experience.</p></div></div><div class="theme-grid">@foreach(var t in Model){<article class="theme-card @(t.IsActive?"active":"")"><div class="theme-preview @t.PreviewClass"><span>A</span><i></i><i></i><i></i></div><h3>@t.Name</h3><p>@t.Description</p>@if(t.IsActive){<span class="pill">Active theme</span>}else{<form method="post" action="/Admin/Themes/Activate"><input type="hidden" name="id" value="@t.Id"><button class="btn primary">Activate</button></form>}</article>}</div>

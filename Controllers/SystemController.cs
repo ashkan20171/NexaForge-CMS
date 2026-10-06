@@ -1,0 +1,7 @@
+using AshkanCMS.Data; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using System.Text;
+namespace AshkanCMS.Controllers;
+public class SystemController(AppDbContext db):Controller{
+ [HttpGet("robots.txt")] public async Task<IActionResult> Robots(){var seo=await db.SeoSettings.FirstOrDefaultAsync();return Content($"User-agent: *\n{(seo?.Robots?.Contains("noindex")==true?"Disallow: /":"Allow: /")}\nSitemap: {Request.Scheme}://{Request.Host}/sitemap.xml","text/plain");}
+ [HttpGet("sitemap.xml")] public async Task<IActionResult> Sitemap(){var urls=new List<string>{$"{Request.Scheme}://{Request.Host}/"};urls.AddRange((await db.Posts.Where(x=>x.Status==Models.ContentStatus.Published).ToListAsync()).Select(x=>$"{Request.Scheme}://{Request.Host}/post/{x.Slug}"));urls.AddRange((await db.Pages.Where(x=>x.Status==Models.ContentStatus.Published).ToListAsync()).Select(x=>$"{Request.Scheme}://{Request.Host}/page/{x.Slug}"));var xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"+string.Join("",urls.Select(x=>$"<url><loc>{System.Security.SecurityElement.Escape(x)}</loc></url>"))+"</urlset>";return Content(xml,"application/xml",Encoding.UTF8);}
+ [HttpGet("api/content/posts")] public async Task<IActionResult> Posts()=>Json(await db.Posts.Where(x=>x.Status==Models.ContentStatus.Published).OrderByDescending(x=>x.PublishedAt).Select(x=>new{x.Id,x.Title,x.Slug,x.Excerpt,x.PublishedAt}).Take(50).ToListAsync());
+}

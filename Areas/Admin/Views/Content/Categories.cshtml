@@ -1,0 +1,2 @@
+@model IEnumerable<Category>
+@{ViewData["Title"]="Categories";}<div class="page-title"><div><h1>Categories</h1><p>Organize content into meaningful collections.</p></div></div><div class="cards">@foreach(var x in Model){<div class="mini-card"><span>◈</span><h3>@x.Name</h3><p>/@x.Slug</p><b>@x.Posts.Count posts</b></div>}</div>

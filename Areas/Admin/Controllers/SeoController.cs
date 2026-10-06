@@ -1,0 +1,4 @@
+using AshkanCMS.Data; using AshkanCMS.Models; using AshkanCMS.Services; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore;
+namespace AshkanCMS.Areas.Admin.Controllers;
+[Area("Admin"),Authorize(Roles="Administrator,Editor")]
+public class SeoController(AppDbContext db,AuditService audit):Controller{public async Task<IActionResult> Index()=>View(await db.SeoSettings.FirstAsync());[HttpPost,ValidateAntiForgeryToken]public async Task<IActionResult> Index(SeoSetting vm){if(!ModelState.IsValid)return View(vm);var s=await db.SeoSettings.FirstAsync();s.DefaultTitle=vm.DefaultTitle;s.DefaultDescription=vm.DefaultDescription;s.Robots=vm.Robots;s.SocialImage=vm.SocialImage;s.GenerateSitemap=vm.GenerateSitemap;await db.SaveChangesAsync();await audit.LogAsync("Updated","SEO","Global SEO settings");TempData["Success"]="SEO settings saved.";return RedirectToAction(nameof(Index));}}

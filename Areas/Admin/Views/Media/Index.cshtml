@@ -1,0 +1,6 @@
+@model IEnumerable<AshkanCMS.Models.MediaItem>
+@{ ViewData["Title"]="Media library"; }
+<div class="page-head"><div><h1>Media library</h1><p>Upload and organize reusable website assets.</p></div></div>
+@if(TempData["Error"]!=null){<div class="alert">@TempData["Error"]</div>}
+<section class="panel upload-panel"><form method="post" enctype="multipart/form-data" asp-action="Upload"><input type="file" name="file" required><input name="alt" placeholder="Alt text for accessibility"><button class="btn primary">Upload media</button></form><small>JPG, PNG, WebP, GIF or PDF · max 8 MB</small></section>
+<div class="media-grid">@foreach(var x in Model){<article class="media-card">@if(x.Url.EndsWith(".pdf")){<div class="file-icon">PDF</div>}else{<img src="@x.Url" alt="@x.Alt">}<div><b>@x.FileName</b><small>@x.UploadedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</small><div class="row-actions"><button class="btn ghost" type="button" onclick="navigator.clipboard.writeText('@x.Url')">Copy URL</button><form method="post" asp-action="Delete" asp-route-id="@x.Id"><button class="btn danger">Delete</button></form></div></div></article>}</div>

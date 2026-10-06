@@ -1,0 +1,5 @@
+@model IEnumerable<AshkanCMS.Models.MenuItem>
+@{ ViewData["Title"]="Menu builder"; }
+<div class="page-head"><div><h1>Menu builder</h1><p>Build the primary navigation without touching code.</p></div></div>
+<section class="panel"><form method="post" asp-action="Add" class="inline-form"><input name="Label" placeholder="Label" required><input name="Url" placeholder="/page/about" required><input name="SortOrder" type="number" value="10"><button class="btn primary">Add item</button></form></section>
+<section class="panel"><table class="data-table"><thead><tr><th>Order</th><th>Label</th><th>URL</th><th>Status</th><th></th></tr></thead><tbody>@foreach(var x in Model){<tr><td>@x.SortOrder</td><td><b>@x.Label</b></td><td><code>@x.Url</code></td><td><span class="badge">@(x.IsVisible?"Visible":"Hidden")</span></td><td class="row-actions"><form method="post" asp-action="Toggle" asp-route-id="@x.Id"><button class="btn ghost">Toggle</button></form><form method="post" asp-action="Delete" asp-route-id="@x.Id"><button class="btn danger">Delete</button></form></td></tr>}</tbody></table></section>

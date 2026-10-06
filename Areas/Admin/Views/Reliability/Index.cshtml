@@ -1,0 +1,20 @@
+@{ ViewData["Title"]="Reliability & Operations"; var errors=(IEnumerable<AshkanCMS.Models.ErrorLogEntry>)ViewBag.LastErrors; var logins=(IEnumerable<AshkanCMS.Models.LoginEvent>)ViewBag.LastLogins; }
+<div class="release-hero panel">
+ <div><span class="eyebrow">STAGE 15 · PORTFOLIO RELEASE CANDIDATE</span><h1>Reliability & Operations Center</h1><p>Operational visibility for content, authentication, scheduled work and extension health — designed for maintainable CMS operations.</p></div>
+ <a class="btn" href="/Admin/Reliability/Diagnostics">Export diagnostics</a>
+</div>
+<div class="stat-grid release-stats">
+ <div class="stat-card"><small>Content</small><b>@ViewBag.Posts</b><span>posts</span></div><div class="stat-card"><small>Assets</small><b>@ViewBag.Media</b><span>media items</span></div><div class="stat-card"><small>Extensions</small><b>@ViewBag.EnabledExtensions</b><span>enabled</span></div><div class="stat-card"><small>Queue</small><b>@ViewBag.PendingJobs</b><span>scheduled jobs</span></div>
+</div>
+<div class="grid-2">
+ <section class="panel"><div class="panel-head"><div><span class="eyebrow">SECURITY SIGNALS</span><h2>Authentication health</h2></div><span class="pill">@ViewBag.FailedLogins24h failed / 24h</span></div>
+ @if(!logins.Any()){<div class="empty good">No login events recorded yet.</div>}else{<div class="stack">@foreach(var x in logins){<div class="row-card"><div><b>@x.UserName</b><small>@x.CreatedAt.ToLocalTime().ToString("g") · @x.IpAddress</small></div><span class="pill">@(x.Success?"Success":"Failed")</span></div>}</div>}
+ </section>
+ <section class="panel"><div class="panel-head"><div><span class="eyebrow">OBSERVABILITY</span><h2>Recent application errors</h2></div><span class="pill">@ViewBag.Errors24h / 24h</span></div>
+ @if(!errors.Any()){<div class="empty good">No application errors recorded.</div>}else{<div class="stack">@foreach(var x in errors){<div class="row-card"><div><b>@x.ErrorType</b><small>@x.Path · @x.CreatedAt.ToLocalTime().ToString("g")</small></div><span class="muted">@x.TraceId</span></div>}</div>}
+ </section>
+</div>
+<div class="grid-2">
+ <section class="panel"><span class="eyebrow">RUNTIME</span><h2>Deployment readiness</h2><div class="readiness-list"><span>✓ Environment-aware error handling</span><span>✓ Secure cookie authentication</span><span>✓ Audit, login and error history</span><span>✓ Safe manifest-based extension boundary</span><span>✓ Diagnostics export without credentials</span><span>✓ PWA manifest and offline shell foundation</span></div></section>
+ <section class="panel"><span class="eyebrow">ENVIRONMENT</span><h2>@ViewBag.EnvironmentName</h2><p class="muted">Use environment variables or a secret store for production credentials. SQLite keeps local onboarding friction low; move the EF Core provider to SQL Server/PostgreSQL for production workloads.</p><a class="btn ghost" href="/Admin/Creator">Open Developer Hub</a></section>
+</div>

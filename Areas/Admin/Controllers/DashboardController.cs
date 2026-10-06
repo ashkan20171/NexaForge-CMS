@@ -1,0 +1,3 @@
+using Microsoft.AspNetCore.Authorization; using AshkanCMS.Data; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore;
+namespace AshkanCMS.Areas.Admin.Controllers; [Area("Admin"),Authorize]
+public class DashboardController(AppDbContext db):Controller{public async Task<IActionResult> Index(){ViewBag.Posts=await db.Posts.CountAsync(); ViewBag.Pages=await db.Pages.CountAsync(); ViewBag.Views=await db.Posts.SumAsync(x=>(int?)x.Views)??0; ViewBag.Comments=await db.Comments.CountAsync(); return View(await db.Posts.Include(x=>x.Category).OrderByDescending(x=>x.CreatedAt).Take(6).ToListAsync());}}

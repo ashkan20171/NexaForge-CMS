@@ -1,0 +1,3 @@
+@model SeoSetting
+@{ViewData["Title"]="SEO center";}
+<div class="page-head"><div><h1>SEO center</h1><p>Control global search and social metadata from one focused workspace.</p></div></div><form method="post" class="panel stack"><label>Default site title<input asp-for="DefaultTitle"></label><label>Default meta description<textarea asp-for="DefaultDescription" rows="4"></textarea></label><label>Robots directive<input asp-for="Robots"></label><label>Default social image URL<input asp-for="SocialImage" placeholder="/uploads/cover.jpg"></label><label class="check"><input asp-for="GenerateSitemap"> Generate sitemap</label><button class="btn primary">Save SEO settings</button></form>

@@ -1,0 +1,11 @@
+@model IEnumerable<ContentRevision>
+@{ ViewData["Title"]="Revision compare"; var post=ViewBag.Post as Post; }
+<div class="page-title"><div><span class="eyebrow">VERSION CONTROL</span><h1>Revision compare</h1><p>Inspect saved snapshots before restoring an older version.</p></div><a class="btn ghost" href="/Admin/Posts/Edit/@post?.Id">← Back to editor</a></div>
+<div class="revision-layout">
+<section class="panel"><div class="panel-head"><div><h3>@post?.Title</h3><p>@Model.Count() historical snapshots</p></div></div><div class="revision-list">
+@foreach(var r in Model){<button type="button" class="revision-item" data-id="@r.Id"><b>@r.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</b><span>@r.CreatedBy</span><small>@r.Title</small></button>}
+@if(!Model.Any()){<div class="empty">No revisions yet. A snapshot is created whenever you update this post.</div>}
+</div></section>
+<section class="panel revision-preview"><div class="panel-head"><div><h3>Snapshot preview</h3><p>Select a revision to inspect it.</p></div></div><div id="revEmpty" class="empty">Choose a version from the timeline.</div><div id="revContent" hidden><h2 id="revTitle"></h2><div class="revision-body" id="revBody"></div><form method="post" action="/Admin/Editor/RestoreRevision"><input type="hidden" name="id" id="revId"><button class="btn primary" type="submit">Restore this revision</button></form></div></section>
+</div>
+<script>document.querySelectorAll('.revision-item').forEach(b=>b.addEventListener('click',async()=>{document.querySelectorAll('.revision-item').forEach(x=>x.classList.remove('active'));b.classList.add('active');const r=await fetch('/Admin/Editor/Revision?id='+b.dataset.id).then(x=>x.json());revEmpty.hidden=true;revContent.hidden=false;revTitle.textContent=r.title;revBody.textContent=r.body;revId.value=r.id;}));</script>

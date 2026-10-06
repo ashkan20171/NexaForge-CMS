@@ -1,0 +1,3 @@
+@model SiteSetting
+@{ViewData["Title"]="Settings";}
+<div class="page-title"><div><h1>Site settings</h1><p>Control your publication identity and presentation.</p></div></div><form method="post" class="panel form-card settings"><input type="hidden" asp-for="Id"><label>Site name<input asp-for="SiteName"></label><label>Tagline<input asp-for="Tagline"></label><label>Brand accent<input asp-for="Accent" type="color"></label><label>Footer text<input asp-for="FooterText"></label><button class="btn primary">Save settings</button></form>

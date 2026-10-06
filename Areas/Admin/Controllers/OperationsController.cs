@@ -1,0 +1,15 @@
+using System.Security.Cryptography; using System.Text; using AshkanCMS.Data; using AshkanCMS.Models; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore;
+namespace AshkanCMS.Areas.Admin.Controllers;
+[Area("Admin"),Authorize] public class OperationsController(AppDbContext db):Controller{
+ public async Task<IActionResult> Analytics(){ViewBag.Posts=await db.Posts.CountAsync();ViewBag.Views=await db.Posts.SumAsync(x=>(long)x.Views);ViewBag.Media=await db.Media.CountAsync();ViewBag.Forms=await db.FormSubmissions.CountAsync();ViewBag.Top=await db.Posts.OrderByDescending(x=>x.Views).Take(8).ToListAsync();return View();}
+ public async Task<IActionResult> Workflow()=>View(await db.WorkflowItems.OrderByDescending(x=>x.UpdatedAt).ToListAsync());
+ [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> WorkflowStatus(int id,string status){var x=await db.WorkflowItems.FindAsync(id);if(x!=null){x.Status=status;x.UpdatedAt=DateTime.UtcNow;await db.SaveChangesAsync();}return RedirectToAction(nameof(Workflow));}
+ public async Task<IActionResult> Crm()=>View(await db.CrmContacts.OrderByDescending(x=>x.CreatedAt).ToListAsync());
+ [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> AddContact(CrmContact m){if(ModelState.IsValid){db.CrmContacts.Add(m);await db.SaveChangesAsync();TempData["Success"]="Contact saved.";}return RedirectToAction(nameof(Crm));}
+ public async Task<IActionResult> Newsletter()=>View(await db.NewsletterSubscribers.OrderByDescending(x=>x.CreatedAt).ToListAsync());
+ [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> AddSubscriber(string email,string name=""){if(!string.IsNullOrWhiteSpace(email)){db.NewsletterSubscribers.Add(new NewsletterSubscriber{Email=email.Trim(),Name=name});await db.SaveChangesAsync();}return RedirectToAction(nameof(Newsletter));}
+ [Authorize(Roles="Administrator")] public async Task<IActionResult> ApiTokens()=>View(await db.ApiTokens.OrderByDescending(x=>x.CreatedAt).ToListAsync());
+ [HttpPost,ValidateAntiForgeryToken,Authorize(Roles="Administrator")] public async Task<IActionResult> CreateToken(string name){var raw=Convert.ToHexString(RandomNumberGenerator.GetBytes(24));var hash=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(raw)));db.ApiTokens.Add(new ApiToken{Name=name,TokenHash=hash,Prefix=raw[..8]});await db.SaveChangesAsync();TempData["NewToken"]=raw;return RedirectToAction(nameof(ApiTokens));}
+ [Authorize(Roles="Administrator")] public async Task<IActionResult> SystemTools()=>View(await db.SystemPreferences.FirstAsync());
+ [HttpPost,ValidateAntiForgeryToken,Authorize(Roles="Administrator")] public async Task<IActionResult> SystemTools(SystemPreference m){var x=await db.SystemPreferences.FirstAsync();x.MaintenanceMode=m.MaintenanceMode;x.CookieConsent=m.CookieConsent;x.EnablePublicApi=m.EnablePublicApi;x.CacheMinutes=Math.Clamp(m.CacheMinutes,0,1440);x.ContactEmail=m.ContactEmail;await db.SaveChangesAsync();TempData["Success"]="System preferences saved.";return RedirectToAction(nameof(SystemTools));}
+}

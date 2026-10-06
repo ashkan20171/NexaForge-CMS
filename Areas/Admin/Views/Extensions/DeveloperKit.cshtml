@@ -1,0 +1,11 @@
+@{ViewData["Title"]="Extension developer kit";}
+<div class="hero-card"><div><span class="eyebrow">ASHKAN CMS SDK</span><h1>Build extensions without changing CMS core</h1><p>Create a folder, add <code>ashkan-package.json</code>, add your assets, ZIP the contents and install it from Extension marketplace.</p></div></div>
+<div class="grid two"><section class="card"><h2>Manifest</h2><pre class="code-panel">{
+  "id": "my-company-seo-tools",
+  "name": "My SEO Tools",
+  "type": "Plugin",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "description": "Custom SEO enhancements"
+}</pre><p class="muted">Valid types: <b>Plugin</b>, <b>Theme</b>, <b>Module</b>.</p></section><section class="card"><h2>Starter packages</h2><p>Use these as working templates and customize the manifest, CSS, JavaScript and documentation.</p><div class="starter-list"><a class="starter" href="/downloads/ashkan-plugin-starter.zip"><b>⬡ Plugin starter</b><span>Manifest + CSS + JS</span></a><a class="starter" href="/downloads/ashkan-theme-starter.zip"><b>◇ Theme starter</b><span>Manifest + theme.css + preview notes</span></a><a class="starter" href="/downloads/ashkan-module-starter.zip"><b>▦ Module starter</b><span>Manifest + module assets</span></a></div></section></div>
+<section class="card"><h2>Security model</h2><p>Ashkan CMS Stage 9 uses a deliberately safe extension boundary. ZIP traversal is blocked, archive and individual file sizes are limited, duplicate package IDs are rejected, and executable server files such as DLL/EXE are not accepted. This lets administrators add presentation and integration packages without silently executing arbitrary server code.</p></section>

@@ -1,0 +1,4 @@
+using AshkanCMS.Data; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using System.Text.Json;
+namespace AshkanCMS.Areas.Admin.Controllers;
+[Area("Admin"),Authorize(Roles="Administrator")]
+public class BackupController(AppDbContext db):Controller{public IActionResult Index()=>View();public async Task<IActionResult> Export(){var data=new{ExportedAt=DateTime.UtcNow,Posts=await db.Posts.AsNoTracking().ToListAsync(),Pages=await db.Pages.AsNoTracking().ToListAsync(),Categories=await db.Categories.AsNoTracking().ToListAsync(),Menus=await db.MenuItems.AsNoTracking().ToListAsync(),Settings=await db.Settings.AsNoTracking().ToListAsync(),Seo=await db.SeoSettings.AsNoTracking().ToListAsync()};var bytes=JsonSerializer.SerializeToUtf8Bytes(data,new JsonSerializerOptions{WriteIndented=true});return File(bytes,"application/json",$"ashkan-cms-backup-{DateTime.UtcNow:yyyyMMdd-HHmm}.json");}}

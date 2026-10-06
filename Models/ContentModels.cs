@@ -1,0 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+namespace AshkanCMS.Models;
+public enum ContentStatus{Draft,Published,Archived}
+public class Post{public int Id{get;set;} [Required,MaxLength(180)] public string Title{get;set;}=""; public string Slug{get;set;}=""; public string Excerpt{get;set;}=""; public string Body{get;set;}=""; public ContentStatus Status{get;set;}=ContentStatus.Draft; public DateTime CreatedAt{get;set;}=DateTime.UtcNow; public DateTime? PublishedAt{get;set;} public int Views{get;set;} public int CategoryId{get;set;} public Category? Category{get;set;} public string FeaturedImage{get;set;}=""; public string MetaTitle{get;set;}=""; public string MetaDescription{get;set;}="";}
+public class Category{public int Id{get;set;} [Required] public string Name{get;set;}=""; public string Slug{get;set;}=""; public List<Post> Posts{get;set;}=new();}
+public class Page{public int Id{get;set;} [Required] public string Title{get;set;}=""; public string Slug{get;set;}=""; public string Body{get;set;}=""; public ContentStatus Status{get;set;}=ContentStatus.Published; public DateTime UpdatedAt{get;set;}=DateTime.UtcNow;}
+public class Comment{public int Id{get;set;} public string Author{get;set;}=""; public string Email{get;set;}=""; public string Body{get;set;}=""; public bool Approved{get;set;} public DateTime CreatedAt{get;set;}=DateTime.UtcNow; public int PostId{get;set;}}
+public class MediaItem{public int Id{get;set;} public string FileName{get;set;}=""; public string Url{get;set;}=""; public string Alt{get;set;}=""; public DateTime UploadedAt{get;set;}=DateTime.UtcNow;}
+public class SiteSetting{public int Id{get;set;} public string SiteName{get;set;}="Ashkan CMS"; public string Tagline{get;set;}="Create. Publish. Grow."; public string Accent{get;set;}="#6750A4"; public string FooterText{get;set;}="Powered by Ashkan CMS";}

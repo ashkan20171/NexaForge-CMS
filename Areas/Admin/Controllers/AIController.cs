@@ -1,0 +1,8 @@
+using AshkanCMS.Data; using AshkanCMS.Models; using AshkanCMS.Services; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore;
+namespace AshkanCMS.Areas.Admin.Controllers;
+[Area("Admin"),Authorize] public class AIController(AppDbContext db,AiAssistantService ai):Controller{
+ public async Task<IActionResult> Index(){ViewBag.History=await db.AiHistory.OrderByDescending(x=>x.CreatedAt).Take(8).ToListAsync();ViewBag.Settings=await db.AiSettings.FirstAsync();return View();}
+ [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> Generate(string tool,string prompt){var cfg=await db.AiSettings.FirstAsync();var result=await ai.GenerateAsync(cfg,tool,prompt,HttpContext.RequestAborted);db.AiHistory.Add(new AiHistoryItem{Tool=tool,Prompt=prompt,Result=result,UserName=User.Identity?.Name??"system"});await db.SaveChangesAsync();TempData["AiResult"]=result;TempData["AiPrompt"]=prompt;TempData["AiTool"]=tool;return RedirectToAction(nameof(Index));}
+ [Authorize(Roles="Administrator")] public async Task<IActionResult> Settings()=>View(await db.AiSettings.FirstAsync());
+ [HttpPost,ValidateAntiForgeryToken,Authorize(Roles="Administrator")] public async Task<IActionResult> Settings(AiSetting model){var x=await db.AiSettings.FirstAsync();x.IsEnabled=model.IsEnabled;x.Provider=model.Provider;x.Model=model.Model;x.Endpoint=model.Endpoint;x.Temperature=Math.Clamp(model.Temperature,0,2);x.DefaultLanguage=model.DefaultLanguage;if(!string.IsNullOrWhiteSpace(model.ApiKey))x.ApiKey=model.ApiKey;await db.SaveChangesAsync();TempData["Success"]="AI settings saved.";return RedirectToAction(nameof(Settings));}
+}

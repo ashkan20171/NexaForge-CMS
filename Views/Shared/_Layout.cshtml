@@ -1,0 +1,4 @@
+@using Microsoft.EntityFrameworkCore
+@inject AshkanCMS.Data.AppDbContext Db
+@{ var menu = await Db.MenuItems.Where(x=>x.IsVisible).OrderBy(x=>x.SortOrder).ToListAsync(); }
+<!doctype html><html lang="en"><head><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#6750a4"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>@ViewData["Title"] · Ashkan CMS</title><link rel="stylesheet" href="~/css/site.css"></head><body><header class="site-nav"><a class="brand" href="/"><span>A</span>Ashkan CMS</a><nav>@foreach(var item in menu){<a href="@item.Url">@item.Label</a>}<a href="/Admin">Dashboard</a></nav></header><main>@RenderBody()</main><footer><b>Ashkan CMS</b><span>Modern publishing, beautifully engineered.</span><small>ASP.NET Core MVC · EF Core · Secure editorial workspace</small></footer></body></html>

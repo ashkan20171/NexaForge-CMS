@@ -1,0 +1,5 @@
+@model IEnumerable<AshkanCMS.Models.ApiToken>
+@{ViewData["Title"]="API Tokens";var fa=Context.Request.Cookies["ashkan.lang"]=="fa";}
+<div class="page-title"><div><span>DEVELOPER</span><h1>@(fa?"توکن‌های API":"API tokens")</h1><p>@(fa?"اعتبارنامه‌های یکپارچه‌سازی؛ مقدار کامل فقط یک‌بار نمایش داده می‌شود":"Integration credentials; full tokens are displayed only once.")</p></div></div>
+@if(TempData["NewToken"]!=null){<div class="notice success"><b>@(fa?"این توکن را همین حالا ذخیره کنید":"Copy this token now"):</b><code class="token">@TempData["NewToken"]</code></div>}
+<form class="panel toolbar" method="post" asp-action="CreateToken"><input name="name" placeholder="Integration name" required><button class="btn primary">@(fa?"ساخت توکن":"Create token")</button></form><div class="panel"><div class="table">@foreach(var x in Model){<div class="tr"><div class="doc-icon">⌘</div><div class="grow"><b>@x.Name</b><small>@x.Prefix•••••••• · @x.CreatedAt.ToLocalTime().ToString("g")</small></div><span class="badge @(x.IsRevoked?"archived":"published")">@(x.IsRevoked?"Revoked":"Active")</span></div>}</div></div>
